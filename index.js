@@ -7,10 +7,19 @@ function reload(){
    window.location.reload(); 
 }
 async function fetchNews(query){
- const response= await fetch(`${url}${query}&apiKey=${API_KEY}`);
- const data=await response.json();
+    try {
+        const response= await fetch(`${url}${query}&apiKey=${API_KEY}`);
+        if(!response.ok){
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data=await response.json();
  bindData(data.articles);
-
+ console.log(data);
+    } catch (error) {
+        console.error('Fetch error:', error);
+    }
+ 
+ 
 }
 function bindData(articles){
  const CardsContainer= document.getElementById("cards-container");
@@ -49,7 +58,7 @@ let curSelectedNav= null;
 function onNavItemClick(id){
     fetchNews(id);
     const navItem= document.getElementById(id);
-    curSelectedNav.classlist.remove('active')
+    curSelectedNav.classList.remove('active')
     curSelectedNav=navItem;
     curSelectedNav.classList.add('active');
 }
